@@ -24,6 +24,10 @@ embeddings_model = GoogleGenerativeAIEmbeddings(
 )
 
 
+# generating basic embeddings for a single text, 
+# batch embeddings for multiple texts, performing similarity search, 
+# and demonstrating caching of embeddings.
+
 def basic_embeddings():
 
     # single text
@@ -33,6 +37,8 @@ def basic_embeddings():
     print(f"First 5 values: {single_embedding[:5]}")
     print(f"Vector norm: {np.linalg.norm(single_embedding):.4f}")
 
+
+# generating embeddings for a batch of texts, printing their dimensions, first few values, and norms.
 
 def batch_embeddings():
     text = [
@@ -47,7 +53,8 @@ def batch_embeddings():
         print(f"Text {i+1} - First 5 values: {emb[:5]}")
         print(f"Text {i+1} - Vector norm: {np.linalg.norm(emb):.4f}")
 
-
+# similarity search function that embeds a set of documents and a query, 
+# computes cosine similarities, and ranks the documents based on their similarity to the query.
 def similarity_search():
 
     # Documents
