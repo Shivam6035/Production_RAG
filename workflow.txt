@@ -1,0 +1,10 @@
+'irm https://astral.sh/uv/install.ps1 | iex'   -- run this in terminal to install packages
+'uv init' -- run this to initialize the projects
+'uv venv' -- to create virtual environment
+'.\.venv\Scripts\activate' -- activate environment
+
+'uv add langchain langchain-core langgraph langchain-openai langchain-anthropic python-dotenv' 
+                 -- install requirements and packages
+
+
+'$null > .env' -- create .env file to save API Key
