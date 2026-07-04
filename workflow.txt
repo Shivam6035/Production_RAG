@@ -9,3 +9,5 @@
 
 '$null > .env' -- create .env file to save API Key
 'uv run main.py' -- to run 
+
+shift + c -- to clear terminal 
