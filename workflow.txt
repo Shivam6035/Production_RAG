@@ -11,3 +11,12 @@
 'uv run main.py' -- to run 
 
 shift + c -- to clear terminal 
+
+create and run main.py to check for API working and all
+
+perfrom document_loader.py to load document  from web scraping
+run raw_emb  to check for vecrtorize the data and see output
+
+## ---------------     setup VectorDB on chromaDB
+create main.py and test for embedding
+we will perfrom similarity search using vector_stores.py
