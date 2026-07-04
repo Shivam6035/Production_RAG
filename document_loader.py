@@ -88,6 +88,7 @@ def doc_structure():
     print(f"  page_content: {doc.page_content}")
     print(f"  metadata: {doc.metadata}")
 
+#pdf loader
 
 def pdf_loader(pdf_path: str):
     loader = PyPDFLoader(pdf_path)
