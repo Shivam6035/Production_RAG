@@ -18,5 +18,17 @@ perfrom document_loader.py to load document  from web scraping
 run raw_emb  to check for vecrtorize the data and see output
 
 ## ---------------     setup VectorDB on chromaDB
+
+
 create main.py and test for embedding
 we will perfrom similarity search using vector_stores.py
+
+text_splitter runed
+token cost runned
+
+
+#---- Setup LangSmith --- 
+and pefrom observablity and tracing
+
+# --- semantic chunking -- 
+   uv add langchain-openai langchain chromadb langchain-experimental (necessary file)
