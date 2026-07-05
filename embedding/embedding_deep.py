@@ -23,6 +23,8 @@ embeddings_model = GoogleGenerativeAIEmbeddings(
     google_api_key=os.getenv("GEMINI_API_KEY")
 )
 
+# normalize vector so that large word dont dominate the vector space,
+# and to make cosine similarity more meaningful.
 
 # generating basic embeddings for a single text, 
 # batch embeddings for multiple texts, performing similarity search, 
