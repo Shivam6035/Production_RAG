@@ -1,4 +1,5 @@
-# cost optimization for embedding generation in LangChain, including batch processing and caching to reduce API calls and costs.
+# cost optimization for embedding generation in LangChain, 
+# including batch processing and caching to reduce API calls and costs.
 
 """
 Cost Optimization Patterns
@@ -19,13 +20,86 @@ load_dotenv()
 # === Model Routing ===
 
 
+# class ModelRouter:
+#     """Route queries to appropriate model based on complexity."""
+
+#     def __init__(self):
+#         self.cheap_model = ChatOpenAI(model="gpt-4o-mini", temperature=0)
+#         self.expensive_model = ChatOpenAI(model="gpt-4o", temperature=0)
+#         self.classifier = ChatOpenAI(model="gpt-4o-mini", temperature=0)
+
+#     def classify_complexity(self, query: str) -> str:
+#         """Classify query complexity."""
+
+#         prompt = ChatPromptTemplate.from_template(
+#             """
+# Classify this query's complexity as 'simple' or 'complex'.
+
+# Simple: Basic facts, short answers, simple calculations
+# Complex: Analysis, reasoning, creative tasks, multi-step problems
+
+# Query: {query}
+
+# Respond with only: simple or complex
+# """
+#         )
+
+#         response = self.classifier.invoke(prompt.format(query=query))
+#         return response.content.strip().lower()
+
+#     @traceable(name="routed_query")
+#     def invoke(self, query: str) -> tuple[str, str, float]:
+#         """
+#         Route and invoke query.
+#         Returns: (response, model_used, estimated_cost)
+#         """
+#         complexity = self.classify_complexity(query)
+
+#         if complexity == "simple":
+#             model = self.cheap_model
+#             model_name = "gpt-4o-mini"
+#             cost_per_1k = 0.00015  # Input cost
+#         else:
+#             model = self.expensive_model
+#             model_name = "gpt-4o"
+#             cost_per_1k = 0.0025  # Input cost
+
+#         response = model.invoke(query)
+
+#         # Estimate cost (rough)
+#         tokens = len(query.split()) * 1.3  # Rough token estimate
+#         estimated_cost = (tokens / 1000) * cost_per_1k
+
+#         return response.content, model_name, estimated_cost
+
+
+import os
+from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_core.prompts import ChatPromptTemplate
+# from langsmith import traceable # Assuming you are using LangSmith for the @traceable decorator
+
 class ModelRouter:
     """Route queries to appropriate model based on complexity."""
 
     def __init__(self):
-        self.cheap_model = ChatOpenAI(model="gpt-4o-mini", temperature=0)
-        self.expensive_model = ChatOpenAI(model="gpt-4o", temperature=0)
-        self.classifier = ChatOpenAI(model="gpt-4o-mini", temperature=0)
+        # ---------------------------------------------------------
+        # OPTION 1: Using Google's Gemini Cloud API (Recommended)
+        # ---------------------------------------------------------
+        # Gemini Flash is blazing fast and incredibly cheap, perfect for simple tasks/classification
+        self.cheap_model = ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=0)
+        self.classifier = ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=0)
+        
+        # Gemini Pro is the heavy lifter for complex reasoning
+        self.expensive_model = ChatGoogleGenerativeAI(model="gemini-2.5-pro", temperature=0)
+
+        # ---------------------------------------------------------
+        # OPTION 2: Using Gemma 4 Locally (e.g., via Ollama)
+        # ---------------------------------------------------------
+        # If you want to use the open-weights Gemma 4 models (like the 12B or 31B variants):
+        # from langchain_community.chat_models import ChatOllama
+        # self.cheap_model = ChatOllama(model="gemma4:12b", temperature=0)
+        # self.classifier = ChatOllama(model="gemma4:12b", temperature=0)
+        # self.expensive_model = ChatOllama(model="gemma4:31b", temperature=0)
 
     def classify_complexity(self, query: str) -> str:
         """Classify query complexity."""
@@ -46,7 +120,7 @@ Respond with only: simple or complex
         response = self.classifier.invoke(prompt.format(query=query))
         return response.content.strip().lower()
 
-    @traceable(name="routed_query")
+    # @traceable(name="routed_query") 
     def invoke(self, query: str) -> tuple[str, str, float]:
         """
         Route and invoke query.
@@ -56,21 +130,21 @@ Respond with only: simple or complex
 
         if complexity == "simple":
             model = self.cheap_model
-            model_name = "gpt-4o-mini"
-            cost_per_1k = 0.00015  # Input cost
+            model_name = "gemini-2.5-flash" # Or "gemma4:12b"
+            cost_per_1k = 0.000075  # Approx input cost for Flash (Gemma 4 locally would be $0.00)
         else:
             model = self.expensive_model
-            model_name = "gpt-4o"
-            cost_per_1k = 0.0025  # Input cost
-
+            model_name = "gemini-2.5-pro" # Or "gemma4:31b"
+            cost_per_1k = 0.00125  # Approx input cost for Pro
+            
         response = model.invoke(query)
 
         # Estimate cost (rough)
         tokens = len(query.split()) * 1.3  # Rough token estimate
         estimated_cost = (tokens / 1000) * cost_per_1k
 
+        # Note: If using Gemma 4 locally, you might just want to set estimated_cost to 0.0
         return response.content, model_name, estimated_cost
-
 
 def demo_model_routing():
     """Demonstrate model routing."""
@@ -106,7 +180,7 @@ class SemanticCache:
     def __init__(self, similarity_threshold: float = 0.9):
         self.cache = {}
         self.threshold = similarity_threshold
-        self.embedder = ChatOpenAI(model="gpt-4o-mini", temperature=0)
+        self.embedder = ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=0)
 
     def _hash_query(self, query: str) -> str:
         """Create hash of normalized query."""
@@ -139,7 +213,7 @@ class CachedLLM:
     """LLM wrapper with caching."""
 
     def __init__(self):
-        self.llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
+        self.llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=0)
         self.cache = SemanticCache()
         self.cache_hits = 0
         self.cache_misses = 0
@@ -239,7 +313,7 @@ class BudgetedLLM:
     """LLM with token budgeting."""
 
     def __init__(self, max_tokens: int = 4000):
-        self.llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
+        self.llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=0)
         self.budget = TokenBudget(max_tokens_per_request=max_tokens)
 
     @traceable(name="budgeted_invoke")
