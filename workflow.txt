@@ -32,3 +32,9 @@ and pefrom observablity and tracing
 
 # --- semantic chunking -- 
    uv add langchain-openai langchain chromadb langchain-experimental (necessary file)
+
+
+
+
+cousre link :-  https://www.youtube.com/watch?v=mHxLXzYjQRE&t=196s 
+          (need to complete till 6hr , after 6 hr advance RAG skip for now)
