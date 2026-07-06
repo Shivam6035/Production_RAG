@@ -23,7 +23,7 @@ def connect_to_supabase() -> PGVector:
         raise ValueError("GEMINI_API_KEY is missing. Please add it to your .env file.")
     
     embeddings = GoogleGenerativeAIEmbeddings(
-        model="models/text-embedding-004",
+        model="gemini-embedding-2",
         google_api_key=GEMINI_API_KEY,
     )
 

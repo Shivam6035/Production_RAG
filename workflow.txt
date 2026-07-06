@@ -44,6 +44,8 @@ and pefrom observablity and tracing
        copy and save all necessary details 
 
        go to dashborad login and > database > extnsions > enable vector
+       after running the supabase/con1.py it will push to the DB
+
 
 
 cousre link :-  https://www.youtube.com/watch?v=mHxLXzYjQRE&t=196s 
