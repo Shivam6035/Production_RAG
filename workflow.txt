@@ -30,10 +30,20 @@ token cost runned
 #---- Setup LangSmith --- 
 and pefrom observablity and tracing
 
-# --- semantic chunking -- 
+# --- semantic chunking --  
+     chunking file 
    uv add langchain-openai langchain chromadb langchain-experimental (necessary file)
+   
+# advance RAG and pipeline
+   adv_rag file 
 
+# production hosting and understanding
 
+       login to 'superbase' and setup
+
+       copy and save all necessary details 
+
+       go to dashborad login and > database > extnsions > enable vector
 
 
 cousre link :-  https://www.youtube.com/watch?v=mHxLXzYjQRE&t=196s 
