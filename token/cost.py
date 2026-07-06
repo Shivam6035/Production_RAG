@@ -171,7 +171,7 @@ def demo_model_routing():
     print(f"\nTotal Estimated Cost: ${total_cost:.6f}")
 
 
-# === Semantic Caching ===
+# === Semantic Caching ===##
 
 
 class SemanticCache:
