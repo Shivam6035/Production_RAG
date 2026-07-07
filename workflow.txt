@@ -27,7 +27,9 @@ text_splitter runed
 token cost runned
 
 
-#---- Setup LangSmith --- 
+#---- Setup LangSmith --- ----
+
+    lang/LangSmith_setup.py
 and pefrom observablity and tracing
 
 # --- semantic chunking --  
@@ -45,6 +47,18 @@ and pefrom observablity and tracing
 
        go to dashborad login and > database > extnsions > enable vector
        after running the supabase/con1.py it will push to the DB
+       main file supabase/production.py to push to supabaseDB
+
+# ------  Logging  and monitoring ---- 
+
+  4:05 hr read and write the production pillar
+
+we will perform logging and tracking
+    logs/monitoring.py
+    we can see all the log  and testing in LangSmith dashborad/tracing
+
+
+# -------------  production projects ------ ##
 
 
 
